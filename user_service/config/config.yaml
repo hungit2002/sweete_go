@@ -1,0 +1,12 @@
+app:
+  port: 9001
+  name: sweete_service
+  env: local
+  key: 1234567
+  timezone: Asia
+  secretKey: 6Sjzu95NWf1D6IGPLF1HK1KuAY1fU4J823
+  tokenToServer: a813ec766197294184a938c331b08e7e3242
+mysql:
+  url: root:1192002@tcp(127.0.0.1:3306)/sweete_db?charset=utf8mb4&parseTime=True&loc=Local
+storage:
+  disk: local
