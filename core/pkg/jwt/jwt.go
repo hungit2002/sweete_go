@@ -1,7 +1,7 @@
 package jwt
 
 import (
-	"fmt"
+	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -18,31 +18,32 @@ type MyClaims struct {
 
 type JWTService interface {
 	GenerateToken(ID int, email string, phone string) (string, error)
-	VerifyToken(tokenString string, secretKey []byte) (*MyClaims, error)
+	VerifyToken(tokenString string) (*MyClaims, error)
 }
 type jwtService struct {
 	secretKey string
 }
 
-func (j *jwtService) VerifyToken(tokenString string, secretKey []byte) (*MyClaims, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+func (j *jwtService) VerifyToken(tokenString string) (*MyClaims, error) {
+	res, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			return nil, errors.New("not valid")
 		}
-		return secretKey, nil
+		return []byte(j.secretKey), nil
 	})
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		fmt.Println("User ID:", claims["user_id"])
-		fmt.Println("Email:", claims["email"])
-		fmt.Println("Phone:", claims["phone"])
-	} else {
-		fmt.Println("Invalid or malformed token")
+	if !res.Valid {
+		log.Error(errors.New("token is invalid"))
+		return nil, errors.New("token is invalid")
 	}
-	return nil, fmt.Errorf("invalid token")
+	claims, ok := res.Claims.(*MyClaims)
+	if !ok {
+		return nil, errors.New("payload not valid")
+	}
+	return claims, nil
 }
 
 func getSecretKey() string {

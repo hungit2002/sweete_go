@@ -54,7 +54,7 @@ type externalServiceStruct struct {
 	Product string `mapstructure:"product"`
 
 	App      string `mapstructure:"app"`
-	User     string `mapstructure:"user"`
+	User     string `mapstructure:"user_controller"`
 	Award    string `mapstructure:"award"`
 	Lesson   string `mapstructure:"lesson"`
 	Story    string `mapstructure:"story"`

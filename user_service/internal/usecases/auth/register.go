@@ -11,7 +11,7 @@ import (
 )
 
 func (u *UseCase) Register(ctx context.Context, firstName string, surname string, dateOfBirth string, gender int, phone string, email string, password string) (*dto.UserResponse, string, error) {
-	// check user
+	// check user_controller
 	_, err := u.userRepository.FirstByParams(ctx, models.QueryUserParam{
 		EmailOrPhone: &models.EmailOrPhone{
 			Email: email,
