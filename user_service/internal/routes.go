@@ -5,9 +5,11 @@ import (
 	jwt_service "sweete/core/pkg/jwt"
 	password_service "sweete/core/pkg/password"
 	"sweete/user_service/internal/delivery/http/v1/auth_controller"
+	"sweete/user_service/internal/delivery/http/v1/user_controller"
 	"sweete/user_service/internal/middlewares"
 	user_repository "sweete/user_service/internal/repositories/user"
 	auth_usecase "sweete/user_service/internal/usecases/auth"
+	user_usecase "sweete/user_service/internal/usecases/user"
 )
 
 func Routes(engine *gin.Engine) {
@@ -17,14 +19,16 @@ func Routes(engine *gin.Engine) {
 	passwordService := password_service.NewPasswordService()
 
 	authUseCase := auth_usecase.New(userRepository, jwtService, passwordService)
+	userUseCase := user_usecase.New(userRepository)
 
 	authController := auth_controller.New(authUseCase)
+	userController := user_controller.New(userUseCase)
 
 	routesWeb := engine.Group("")
 	{
 		routesWeb.GET("/", func(context *gin.Context) {
 			context.JSON(200, gin.H{
-				"message": "Service user",
+				"message": "Service user_controller",
 			})
 		})
 	}
@@ -34,5 +38,8 @@ func Routes(engine *gin.Engine) {
 	{
 		routesApi.POST("/login", authController.Login)
 		routesApi.POST("/register", authController.Register)
+		routesApi.GET("/get-users-by-params", middlewares.CheckPermission, userController.GetUsersByParams)
+		routesApi.GET("/get-user-detail", middlewares.CheckPermission, userController.GetUserDetail)
+		routesApi.GET("/invite-friend", middlewares.CheckPermission, userController.GetUserDetail)
 	}
 }

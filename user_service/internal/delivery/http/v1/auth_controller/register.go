@@ -8,7 +8,7 @@ import (
 )
 
 func (c *Controller) Register(ctx *gin.Context) {
-	message := "Register user"
+	message := "Register user_controller"
 
 	var input dto.RegisterDTO
 	if err := ctx.ShouldBindJSON(&input); err != nil {

@@ -15,6 +15,10 @@ func New() repositories.IUserRepository {
 	return &Repository{}
 }
 
+func PreloadUser(db *gorm.DB, preload *models.PreloadUser) *gorm.DB {
+	return db
+}
+
 func (r *Repository) QueryUserByParam(query *gorm.DB, params models.QueryUserParam) *gorm.DB {
 	if len(params.IDs) > 0 {
 		query = query.Where("users.id in ?", params.IDs)
@@ -29,7 +33,7 @@ func (r *Repository) QueryUserByParam(query *gorm.DB, params models.QueryUserPar
 		query = query.Where("users.email = ?", params.Email)
 	}
 	if params.FullName != "" {
-		query = query.Where("users.full_name = ?", params.FullName)
+		query = query.Where("users.full_name like ?", "%"+params.FullName+"%")
 	}
 	if params.DeletedAt {
 		query = query.Where("users.deleted_at is null")

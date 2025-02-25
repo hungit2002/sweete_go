@@ -7,7 +7,7 @@ type LoginDTO struct {
 }
 type AuthResponseDTO struct {
 	AccessToken string       `json:"access_token"`
-	User        UserResponse `json:"user"`
+	User        UserResponse `json:"user_controller"`
 }
 
 type RegisterDTO struct {
@@ -21,7 +21,7 @@ type RegisterDTO struct {
 }
 type RegisterResponseDTO struct {
 	AccessToken string       `json:"access_token"`
-	User        UserResponse `json:"user"`
+	User        UserResponse `json:"user_controller"`
 }
 
 type UserResponse struct {
