@@ -19,6 +19,8 @@ type User struct {
 	CreatedAt     time.Time  `json:"created_at"`
 	UpdatedAt     time.Time  `json:"updated_at"`
 	DeletedAt     *time.Time `json:"deleted_at"`
+
+	Friends []*Friend `gorm:"foreignKey:user_id;references:id" json:"friends"`
 }
 
 func (User) TableName() string {
@@ -56,4 +58,12 @@ type SelectParam struct {
 	Select []string
 }
 type PreloadUser struct {
+	Friends     *PreloadUserFriend
+	FriendUsers *PreloadUserFriendUser
+}
+type PreloadUserFriend struct {
+	Query *QueryFriendParam
+}
+type PreloadUserFriendUser struct {
+	Query *QueryFriendParam
 }

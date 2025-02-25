@@ -15,8 +15,33 @@ func New() repositories.IUserRepository {
 	return &Repository{}
 }
 
-func PreloadUser(db *gorm.DB, preload *models.PreloadUser) *gorm.DB {
-	return db
+func PreloadUser(query *gorm.DB, preload *models.PreloadUser) *gorm.DB {
+	if preload != nil {
+		if preload.Friends != nil {
+			query = query.Preload("Friends", func(db *gorm.DB) *gorm.DB {
+				db = db.Where("deleted_at IS NULL")
+
+				if len(preload.Friends.Query.Select) > 0 {
+					db = db.Select(preload.Friends.Query.Select)
+				}
+				return db
+			})
+		}
+		if preload.FriendUsers != nil {
+			query = query.Preload("Friends", func(db *gorm.DB) *gorm.DB {
+				db = db.Where("deleted_at IS NULL")
+				return db
+			})
+			query = query.Preload("Friends.Users", func(db *gorm.DB) *gorm.DB {
+				db = db.Where("deleted_at IS NULL")
+				if len(preload.FriendUsers.Query.Select) > 0 {
+					db = db.Select(preload.FriendUsers.Query.Select)
+				}
+				return db
+			})
+		}
+	}
+	return query
 }
 
 func (r *Repository) QueryUserByParam(query *gorm.DB, params models.QueryUserParam) *gorm.DB {

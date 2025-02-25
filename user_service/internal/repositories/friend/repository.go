@@ -31,5 +31,9 @@ func QueryFriendByParams(query *gorm.DB, param models.QueryFriendParam) *gorm.DB
 	if param.DeletedAt {
 		query = query.Where("deleted_at is null")
 	}
+
+	if param.SwapUserIDFriendID.UserID != 0 && param.SwapUserIDFriendID.FriendID != 0 {
+		query = query.Where("(user_id = ? && friend_id = ?) or (user_id = ? && friend_id = ?)", param.SwapUserIDFriendID.UserID, param.SwapUserIDFriendID.FriendID, param.SwapUserIDFriendID.FriendID, param.SwapUserIDFriendID.UserID)
+	}
 	return query
 }

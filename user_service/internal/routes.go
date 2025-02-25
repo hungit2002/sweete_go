@@ -7,19 +7,23 @@ import (
 	"sweete/user_service/internal/delivery/http/v1/auth_controller"
 	"sweete/user_service/internal/delivery/http/v1/user_controller"
 	"sweete/user_service/internal/middlewares"
+	friend_repository "sweete/user_service/internal/repositories/friend"
 	user_repository "sweete/user_service/internal/repositories/user"
 	auth_usecase "sweete/user_service/internal/usecases/auth"
+	friend_usecase "sweete/user_service/internal/usecases/friend"
 	user_usecase "sweete/user_service/internal/usecases/user"
 )
 
 func Routes(engine *gin.Engine) {
 	userRepository := user_repository.New()
+	friendRepository := friend_repository.New()
 
 	jwtService := jwt_service.NewJWTService()
 	passwordService := password_service.NewPasswordService()
 
 	authUseCase := auth_usecase.New(userRepository, jwtService, passwordService)
-	userUseCase := user_usecase.New(userRepository)
+	friendUseCase := friend_usecase.New(friendRepository)
+	userUseCase := user_usecase.New(userRepository, friendUseCase)
 
 	authController := auth_controller.New(authUseCase)
 	userController := user_controller.New(userUseCase)
@@ -40,6 +44,6 @@ func Routes(engine *gin.Engine) {
 		routesApi.POST("/register", authController.Register)
 		routesApi.GET("/get-users-by-params", middlewares.CheckPermission, userController.GetUsersByParams)
 		routesApi.GET("/get-user-detail", middlewares.CheckPermission, userController.GetUserDetail)
-		routesApi.GET("/invite-friend", middlewares.CheckPermission, userController.GetUserDetail)
+		routesApi.POST("/invite-friend", middlewares.CheckPermission, userController.InviteFriend)
 	}
 }
