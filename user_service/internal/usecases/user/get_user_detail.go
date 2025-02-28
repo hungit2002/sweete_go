@@ -19,6 +19,8 @@ func (u *UseCase) GetUserDetail(ctx context.Context, id int) (*models.User, erro
 		"work_info",
 		"education_info",
 		"address"}
+
+	statusAccepted := models.StatusAccepted
 	user, err := u.userRepository.FirstByParams(ctx, models.QueryUserParam{
 		SelectParam: models.SelectParam{Select: columns},
 		ID:          id,
@@ -29,6 +31,7 @@ func (u *UseCase) GetUserDetail(ctx context.Context, id int) (*models.User, erro
 					SelectParam: models.SelectParam{
 						Select: columns,
 					},
+					Status: statusAccepted,
 				},
 			},
 		},

@@ -10,7 +10,7 @@ import (
 )
 
 func (u *UseCase) InviteFriend(ctx context.Context, userID int, friendID int, status int) error {
-	friend, err := u.friendUseCase.FirstByParams(ctx, models.QueryFriendParam{SwapUserIDFriendID: models.SwapUserIDFriendID{UserID: userID, FriendID: friendID}, DeletedAt: true})
+	friend, err := u.friendUseCase.FirstByParams(ctx, models.QueryFriendParam{UserID: userID, FriendID: friendID, DeletedAt: true})
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Error(err)

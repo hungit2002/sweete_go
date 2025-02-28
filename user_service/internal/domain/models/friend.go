@@ -40,3 +40,9 @@ type PreloadFriend struct {
 type PreloadFriendUsers struct {
 	Query *QueryUserParam
 }
+
+const (
+	StatusAccepted = 2
+	StatusPending  = 1
+	StatusBlocked  = 3
+)

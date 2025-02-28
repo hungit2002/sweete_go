@@ -30,6 +30,9 @@ func PreloadUser(query *gorm.DB, preload *models.PreloadUser) *gorm.DB {
 		if preload.FriendUsers != nil {
 			query = query.Preload("Friends", func(db *gorm.DB) *gorm.DB {
 				db = db.Where("deleted_at IS NULL")
+				if preload.FriendUsers.Query.Status != 0 {
+					db = db.Where("status = ?", preload.FriendUsers.Query.Status)
+				}
 				return db
 			})
 			query = query.Preload("Friends.Users", func(db *gorm.DB) *gorm.DB {
