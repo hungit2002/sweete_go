@@ -7,7 +7,7 @@ import (
 )
 
 func (c *Controller) Create(ctx *gin.Context) {
-	message := "create post"
+	//message := "create post"
 
 	var input dto.CreatePostInputDTO
 
